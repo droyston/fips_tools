@@ -1,11 +1,13 @@
-function MRI_Info=Prep_Paths(MRI_Info)
+% 2019-09-08 Dylan Royston
+% 
 % Fill in paths for MRI_Info_Class
 %
-% 2012-08-06 Foldes
+% Adapted from 2012-08-06 Foldes
 % UPDATES
-% 2013-02-09 Foldes: ***VERSION 1.0-Maxwell***
-% 2014-01-01 Foldes: This needs to be an object
-% 2014-04-03 Foldes: Now part of MRI_Info_Class, renamed from fMRI_Prep_Paths
+% 
+
+function MRI_Info=Prep_Paths(MRI_Info)
+
 
 % path to spm
 if isempty(MRI_Info.spm_path)

@@ -1,19 +1,14 @@
-%
-%
-% 2016-03-08 Dylan Royston
+% 2019-09-08 Dylan Royston
 %
 % Batch job file created for Covert Mapping automated pre-processing
 % Uses switch-case to input condition onsets/contrasts
 % Most settings are hard-coded to SPM default values, variables are noted as such
 % 
+% NOTE: For Segmentation step, paths to SPM12's tissue probability map (TPM) files must be specified directly
+% Model specifications are also hard-coded
+%
 % === UPDATES ===
-% 2016-06-21 Royston: updated Segment file paths (which are hard-coded for
-%                     some reason) to direct to server files
-% 2016-10-03 Royston: reverting some changes that apparently randomly injected themselves on 2016-09-07
-%
-%
-% === TO DO ===
-% - Determine if Segment can be skipped if already done (need deformation matrices for following dependency?)
+% 
 %
 %%
 
@@ -82,9 +77,9 @@ matlabbatch{2}.spm.spatial.coreg.estimate.eoptions.fwhm = [7 7];
 %% SEGMENTATION
 
 if isunix
-    tpm_path = '/home/dar147/spm12/tpm/TPM.nii';
+    tpm_path = 'path/spm12/tpm/TPM.nii';
 else
-    tpm_path = 'R:\data_generated\human\covert_mapping\CM_Analysis_Tools\spm12\tpm\TPM.nii';
+    tpm_path = 'path\spm12\tpm\TPM.nii';
 end
 
 matlabbatch{3}.spm.spatial.preproc.channel.vols(1) = cfg_dep('Coregister: Estimate: Coregistered Images', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','cfiles'));

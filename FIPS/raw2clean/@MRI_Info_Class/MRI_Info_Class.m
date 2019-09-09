@@ -1,12 +1,13 @@
+% 2019-09-08 Dylan Royston
+%
 % Object for fMRI processing
 %
 % SPM can't deal with relative paths right now (spm_existfile fail...whoops)
 % This includes ~/
 %
-% 2014-01-01 Foldes
+% Adapted from 2014-01-01 Foldes
 % UPDATES:
-% 2014-01-06 Foldes: Added ExpDef for SPM variables
-% 2014-04-03 Foldes: Add prep paths, defaults added
+% 
 
 classdef MRI_Info_Class
     

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2019-09-08 Dylan Royston
 # Performs Freesurfer reconstuction (recon-all), FS->SUMA conversion, and BEM creation of structural MRI taken at MRRC
 # EXAMPLE COMMAND: /path/FreesurferReconstruction.sh NC06 /Users/hrnel/Data/NC06/fMRI/Initial
 # Input 1 = subject id
@@ -16,13 +17,9 @@
 #
 # OUTPUTS: folder ./Freesurfer_Reconstruction/ --includes brain surfaces (e.g. pial)
 #
-# 2012-07-26 [Foldes/Randazzo]
+# Adapted from 2012-07-26 [Foldes/Randazzo]
 # UPDATES:
-#	2013-02-08 Foldes/Randazzo: Fixed DYLD_FALLBACK_LIBRARY_PATH issue for Matlab
-#	2013-02-09 Foldes: ***VERSION 1.0-Maxwell***
-#	2014-04-03 Foldes: ***VERSION 1.1*** Defines paths by computer name
-#	2015-12-03 Foldes: Changed name to maxwell.local (why did this change? will it change again?)
-#	2016-02-20 Foldes: Added input variable for exact file name and path of MPRAGE file
+#	
 
 # Defines the subject from input 1
 # EXAMPLE: /path/NC07/Initial/ => ${SUBJECTS_DIR}/${SUBJECT_ID}/${SESSION_TYPE}/

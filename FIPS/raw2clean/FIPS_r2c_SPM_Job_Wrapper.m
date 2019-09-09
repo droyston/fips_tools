@@ -1,4 +1,5 @@
-function MRI_Info = SPM_Job_Wrapper_CM(MRI_Info)
+% 2019-09-08 Dylan Royston
+%
 % A wrapper to help run a SPM job. Uses MRI_Info_Class
 % Requires SPM and an SPM job
 % Can leave input blank for GUI form (NOT TESTED YET)
@@ -55,10 +56,13 @@ function MRI_Info = SPM_Job_Wrapper_CM(MRI_Info)
 % Right now this is likely specific to our standard SPM processing
 % Might want to consider using a struct instead of a ridged class
 %
-% 2014-01-07 Foldes [Branched from fMRI_RunFunctionalAnalysis 2012-08-06 Foldes and Randazzo - via Betsy and Tim]
+% Adapted from 2014-01-07 Foldes [Branched from fMRI_RunFunctionalAnalysis 2012-08-06 Foldes and Randazzo - via Betsy and Tim]
 % UPDATES:
-% 2014-04-03 Foldes: Prep_Paths in obj
-% 2016-03-08 Royston: Updated for Covert Mapping study design
+% 
+%%
+
+function MRI_Info = FIPS_r2c_SPM_Job_Wrapper(MRI_Info)
+
 
 %% Standard setup
 

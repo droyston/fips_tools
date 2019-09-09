@@ -1,4 +1,5 @@
-function MRI_Info = Run_fMRI_Analysis(MRI_Info,Flags)
+% 2019-09-08 Dylan Royston 
+%
 % Run Analysis for fMRI data or pieces of analysis
 %
 % Uses SPM for fMRI analysis and Freesurfer for reconstruction
@@ -11,11 +12,14 @@ function MRI_Info = Run_fMRI_Analysis(MRI_Info,Flags)
 %
 % Paths are modular
 %
-% EXAMPLE: SCRIPT_Run_fMRI_Analysis.m
+% EXAMPLE: FIPS_SHELL_raw2clean.m
 %
-% 2014-01-09 [Foldes]
+% Adapted from Run_fMRI_Analysis (2014-01-09 [Foldes])
 % UPDATES:
-% 2014-04-03 Foldes: Prep_Paths in obj
+% 
+%%
+
+function MRI_Info = FIPS_r2c_Run_All(MRI_Info,Flags)
 
 % Turn _design into strings
 MRI_Info = design2str_struct(MRI_Info);
@@ -26,7 +30,7 @@ MRI_Info=Prep_Paths(MRI_Info);
 if Flags.convert
     % Converts the raw data first to DICOM and then to NIFTI
     % Nice to have: MRI_Info.raw_data_path, MRI_Info.epi_path
-    MRI_Info = fMRI_ConvertMRRCdata(MRI_Info);
+    MRI_Info = FIPS_r2c_raw2nifti(MRI_Info);
     % MAKES: NIFTI and DICOM folders
 end
 %% STEP 2: Construct brain and head surfaces via Freesurfer
@@ -46,7 +50,7 @@ if Flags.FS
 end
 %% STEP 3: Perform SPM on fMRI data
 if Flags.SPM
-    MRI_Info=SPM_Job_Wrapper_CM(MRI_Info);
+    MRI_Info= FIPS_r2c_SPM_Job_Wrapper(MRI_Info);
     
     % Copy all 'coregspmT_0001' files in epi_path to output_path
     % avoid MPRAGE, remove 'coregspmT_0001' from the file name, add subject id and name of epi folder

@@ -1,7 +1,9 @@
-% Script to run Analysis for fMRI data or pieces of analysis
-%   SEE: Run_fMRI_Analysis.m
+% 2019-09-08 Dylan Royston
+% Updated shell script to run file-conversion, organization, and preprocessing through SPM12 and Freesurfer
 %
-% Uses SPM for fMRI analysis and Freesurfer for reconstruction
+%   SEE: FIPS_r2c_Run_All.m
+%
+% Uses Freesurfer for cortical reconstruction, SPM for fMRI preprocessing/analysis
 % Can pick and choose which processing to do
 %
 % Step 1: Converts Raw to DICOM and NIFTI
@@ -11,14 +13,10 @@
 %
 % Paths are modular
 %
-% 2014-01-09 [Foldes]
+% Adapted from SCRIPT_run_fMRI_analysis (2014-01-09 [Foldes])
 % UPDATES:
-% 2014-04-03 Foldes: Clean up, defaults in MRI_Info_Class, etc
-% 2015-03-17 Royston: Added subjects_to_process loop for multiple subject processing
-% 2016-03-07 Royston: Updated to work with Covert Mapping paradigms (EPrime log look-up and model specifications)
-% 2016-09-07 Royston: updated "all" check in CM to pull tasks from pre-curated subject folder
-% 2019-07-12 Royston: re-adding some lost patches to enable smarter processing of "all" files (only unfinished tasks)
-
+% 
+%%
 clear
 clc
 
@@ -38,30 +36,14 @@ Flags.CM =          1;% 0 for dumb conversion, 1 for smart CM SPM processing
 % MRI_Info = MRI_Info_Class;
 
 subjects_to_process =             {'all'};
-% subjects_to_process =             {'CMS01'};%, 'CMC09', 'CMC10', 'CMC11', 'CMS01'};
-% subjects_to_process =           {'CMS12'};
-% subjects_to_process =           {'CMC18', 'CMC19', 'CMC22', 'CMC23', 'CMC24', 'CMC25', 'CMC26', 'CMC27', 'CMS04', 'CMS07'};
-% subjects_to_process =           {'CMS10', 'CMS13','CMC18', 'CMC19', 'CMC22', 'CMC23', 'CMC24', 'CMC25', 'CMC26', 'CMC27' };
-% subjects_to_process =           {'NC01', 'NC02', 'NC03', 'NC04', 'NC05', 'NC06', 'NC07', 'NC08', 'NC09', 'NC10', 'NC11', 'NC12', 'NC13', 'NC14', 'NS01', 'NS02', 'NS03', 'NS04', 'NS06', 'NS07'};
-% subjects_to_process =           {'NS01_initial', 'NS01_followup','NS02_initial', 'NS02_followup', 'NS03_initial', 'NS03_followup', 'NS04_initial', 'NS04_followup', 'NS06_initial', 'NS06_followup', 'NS07_initial', 'NS07_followup', 'NS12', 'NS13'};
-
-
 
 % start setting paths depending on OS
 if isunix
-%     MRI_Info.study_path_design =    '/home/dar147/Desktop/test_data/[subject_id]';
-%     MRI_Info.study_path_design =    '/home/dar147/data/rnel-fs-1/data_generated/human/covert_mapping/SUBJECT_DATA_STORAGE/[subject_id]/INDIVIDUAL';
-    MRI_Info.study_path_design =    '/home/dar147/data/VAShare/CovertMapping/data_generated/SUBJECT_DATA_STORAGE/[subject_id]';
-
-    subjects_dir =                   '/home/dar147/data/VAShare/CovertMapping/data_generated/SUBJECT_DATA_STORAGE';
-    
-    delimiter =                     '/';
-    
+    MRI_Info.study_path_design =    'project_path/SUBJECT_DATA_STORAGE/[subject_id]';
+    subjects_dir =                   'project_path/SUBJECT_DATA_STORAGE';
 else
-%     MRI_Info.study_path_design =    'R:\data_generated\human\covert_mapping\SUBJECT_DATA_STORAGE\[subject_id]';
-    MRI_Info.study_path_design =    'R:\data_generated\human\craniux\new_imaging\[subject_id]';
+    MRI_Info.study_path_design =    'project_path\[subject_id]';
 end% IF isunix
-
 
 % 2019-07-12 Royston: if passed 'all' subjects, rewrite subjects_to_process as all subject IDs in directory
 if length(subjects_to_process) == 1
@@ -83,28 +65,20 @@ end
 for i = 1 : length(subjects_to_process)
 
 clearvars -except Flags subjects_to_process i subjects_dir delimiter
-% cd('R:\data_generated\human\covert_mapping\SUBJECT DATA STORAGE');
 
 % MRI_Info is a container for all information needed for fMRI processing in this code.
 MRI_Info = MRI_Info_Class;
 
-MRI_Info.study_path_design =    [subjects_dir delimiter '[subject_id]'];
+MRI_Info.study_path_design =    fullfile(subjects_dir, [subject_id]');
     
 MRI_Info.subject_id =           subjects_to_process{i};
 % Base Path Design (use [] for accessing MRI_Info property names)
 
 
-% MRI_Info.study_path_design =    'R:\data_generated\human\fMRI_motor_imagery\New subject data storage\[subject_id]';
 
-MRI_Info.epi_run_list =             {'all'};
-% MRI_Info.epi_run_list =             {'ankle', 'elbow', 'fingers', 'grasp', 'wrist'};
-% MRI_Info.epi_run_list =               {'grasp'};
-% MRI_Info.epi_run_list =             {'Motor_covert_fingers', 'Motor_covert_hand', 'Motor_covert_wrist', 'Sensory_covert_fingers', 'Sensory_covert_wrist', 'Sensory_overt_fingers', 'Sensory_overt_wrist'};
-% MRI_Info.epi_run_list =                 {'Motor_covert_fingers_sub'};
+MRI_Info.epi_run_list =          {'all'};
 
-MRI_Info.spm_job =              'CM_norm_smooth.m'; % full path or must be in Matlab path
-% MRI_Info.spm_job =              'CM_indiv_smooth_Fang.m'; % full path or must be in Matlab path
-% MRI_Info.spm_job =              'SPM_Batch_Individual_Block_Design.m';
+MRI_Info.spm_job =              'FIPS_r2c_batch_norm_smooth.m'; % full path or must be in Matlab path
 
 
 % extracts onset times/names from specific Covert Mapping paradigms
@@ -116,20 +90,17 @@ if Flags.CM == 1
     onset_times =    {};
 
     if strcmp( MRI_Info.epi_run_list, 'all')
-%        MRI_Info.epi_run_list = {'Motor_covert_hand', 'Motor_covert_fingers', 'Motor_covert_wrist', 'Motor_overt', ...
-%            'Sensory_covert_fingers', 'Sensory_covert_wrist', 'Sensory_overt_fingers', 'Sensory_overt_wrist'};
-
 
        folder_names =   {};
        log_file_name =  {};
        
-       strings_in.subject_id =     MRI_Info.subject_id;
+       strings_in.subject_id =  MRI_Info.subject_id;
        subject_path =           str_from_design(strings_in, MRI_Info.study_path_design);
-       subject_dir =           [subject_path '/NIFTI'];
+       subject_dir =            [subject_path '/NIFTI'];
        
 %        cd(subject_path);
        
-       subject_folders =          dir(subject_dir);
+       subject_folders =        dir(subject_dir);
        task_counter =           0;
        
        for file_idx = 3 : length(subject_folders) 
@@ -173,14 +144,13 @@ if Flags.CM == 1
         
         % OS path switch
         if isunix
-%             log_path_design =           '/home/dar147/Desktop/test_data/[subject_id]/EPrime Logs';
-            log_path_design =           '/home/dar147/data/VAShare/CovertMapping/data_generated/SUBJECT_DATA_STORAGE/[subject]/EPrime Logs';
+            log_path_design =           'project_path/SUBJECT_DATA_STORAGE/[subject]/EPrime Logs';
         else
-            log_path_design =           'R:\data_generated\human\covert_mapping\SUBJECT_DATA_STORAGE\[subject]\EPrime Logs';
+            log_path_design =           'project_path\SUBJECT_DATA_STORAGE\[subject]\EPrime Logs';
         end% IF isunix
         
         log_path =                  str_from_design(strings_in, log_path_design);
-        log_data =                 dir(log_path);
+        log_data =                  dir(log_path);
         log_names =                 {log_data(:).name};
         log_names =                 log_names(3:end);
         log_counter =               0;
@@ -211,7 +181,7 @@ if Flags.CM == 1
                 check_nums(itemp) =     str2num(test_nums{1});
             end
             
-            [higher_val, high_idx] =          max(check_nums);
+            [higher_val, high_idx] =         max(check_nums);
             [lower_val, low_idx] =           min(check_nums);
             
             % assigns higher trial num to repeated task
@@ -252,7 +222,7 @@ if Flags.CM == 1
     MRI_Info.ExpDef_event_onsets =      onset_times;% cell array of n*5 onset time matrices
     MRI_Info.ExpDef_event_duration =    5;% number of TRs in 'move' condition (10 sec)
     
-else% CM flag
+else% smart-onset flag
     % hard-coded values for old MEG-NF data
     
     % Experimental Design Info
@@ -262,15 +232,15 @@ else% CM flag
     
 end
 
-MRI_Info.FS_script =            'FreesurferReconstruction.sh'; % Relative paths if in Matlab Path
-MRI_Info.SPM2SUMA_script =      'SPM2SUMA.sh';
+MRI_Info.FS_script =            'FIPS_r2c_FreesurferReconstruction.sh'; % Relative paths if in Matlab Path
+MRI_Info.SPM2SUMA_script =      'FIPS_r2c_SPM2SUMA.sh';
 
 %% =======================================================
 %  ===PROCESSING==========================================
 %  =======================================================
 
 if ~isempty(MRI_Info.epi_run_list)
-    MRI_Info = Run_fMRI_Analysis(MRI_Info,Flags);
+    MRI_Info = FIPS_r2c_Run_All(MRI_Info,Flags);
 else
     disp(['*** NO BLANK TASKS, SKIPPING SUBJECT ' subjects_to_process{i} ' ***']);
 end

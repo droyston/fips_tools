@@ -1,15 +1,10 @@
-
-function onset_times = eprimeparse(string_in)
-
-
+% 2019-09-08 Dylan Royston
 %
-% 2014-04-14 Stephen Foldes
+% Function to extract event-onset times from EPrime experiment logs
+%
+% Adapted from 2014-04-14 Stephen Foldes
 %
 % === UPDATES ===
-% 2015-04-06 Royston: updated for covert mapping Eprime logs
-% 2015-09-18 Royston: updated text checking to account for Matlab's bizarre formatting
-% 2016-03-07 Royston: converted to function for automating SPM processing (referenced in SCRIPT_Run_fMRI_Analysis.m)
-% 2016-09-01 Royston: added extra audio_check to catch +audio instead of +sound in EPrime logs
 %
 %
 % ==== Basic Extract ====
@@ -28,6 +23,11 @@ function onset_times = eprimeparse(string_in)
 %         value{imatch,1} = txt{match_idx(imatch)};
 %     end
 % end
+%
+%%
+
+function onset_times = eprimeparse(string_in)
+
 
 
 

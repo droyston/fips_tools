@@ -1,24 +1,21 @@
 #!/bin/bash
 
+# 2019-09-08 Dylan Royston
+#
 # Prepares functional data from SPM for SUMA display using mri_convert and SurfGen
-# EXAMPLE COMMAND:  /Users/hrnel/Documents/MATLAB/meg_analysis/unix_scripts/SPM2SUMA_Maxwell NC06 /Users/hrnel/Data/NC06/fMRI/Initial
 # Input 1 = subject id
 # Input 2 = study path, the location for the parent folder of /Freesurfer_Reconstruction and /FunctionalData/ (where the SPM output files live when running Run_fMRI_Analysis.m)
 #
 # Assumes you already ran @SUMA_Make_Spec_FS on the anatomical (see FreesurferReconstruction)
-# WORKS WITH Run_fMRI_Analysis.m, assumes a distinct file structure for easier use EXAMPLE: /Users/hrnel/Data/NC06/fMRI/Initial/
+# WORKS WITH Run_fMRI_Analysis.m, assumes a distinct file structure for easier use EXAMPLE: /project/subject/fMRI/Initial/
 # Uses computer name to define paths
 #
 # REQUIRES: SUMA .spec files and .img files from SPM functional analysis
 # OUTPUTS: SUMA surfaces and compatible .nii functional data in study_path/FunctionalData
 
-# 2012-08-07 [Randazzo/Foldes]
+# Adapted from 2012-08-07 [Randazzo/Foldes]
 # UPDATES:
-# 2012-02-05 Foldes/Randazzo: Made into unix function, renamed from Prepare4SUMA
-# 2013-02-08 Foldes/Randazzo: Fixed DYLD_FALLBACK_LIBRARY_PATH issue for Matlab
-# 2013-02-09 Foldes: ***VERSION 1.0-Maxwell***
-# 2014-04-03 Foldes: ***VERSION 1.1*** Defines paths by computer name
-# 2015-12-03 Foldes: Changed name to maxwell.local (why did this change? will it change again?)
+# 
 
 # Set computer specific paths for MRI analysis (Freesurfer and Afni/SUMA)
 # NOTE: Paths might need to be adjusted for different computers (e.g. PERL)

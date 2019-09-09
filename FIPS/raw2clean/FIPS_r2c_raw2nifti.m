@@ -1,4 +1,5 @@
-function MRI_Info = fMRI_ConvertMRRCdata(MRI_Info,varargin)
+% 2019-09-08 Dylan Royston
+%
 % Converts Raw MRI files from MRRC to NIFTI and/or DICOM format.
 % Used before Freesurfer and SPM
 % MRI_Info can be used. If not included, will use GUIs
@@ -15,16 +16,13 @@ function MRI_Info = fMRI_ConvertMRRCdata(MRI_Info,varargin)
 %   save_DICOM: [default to remove]
 %   DICOM_only: Does DICOM Only, no NIFTI
 %
-% 2012-08-06 (Stephen Foldes via Mike, Betsy, and Tim)
+% Adapted from 2012-08-06 (Stephen Foldes via Mike, Betsy, and Tim)
 % UPDATES:
-% 2012-12-12 Foldes: deletes DICOM folder at the end
-% 2013-02-01 Foldes: Now a function
-% 2013-02-09 Foldes: Removed 'script' from function name
-% 2013-02-09 Foldes: ***VERSION 1.0-Maxwell***
-% 2014-01-01 Foldes: MAJOR update w/ object, options etc.
-% 2014-01-07 Foldes: MAJOR Cleaned up and now use epi_path
-% 2014-04-03 Foldes: Prep_Paths in obj
-% 2016-09-21 Royston: replaced a ton of subfunctions with a newer, premade dicm2nii converter function
+% 
+%%
+
+function MRI_Info = fMRI_ConvertMRRCdata(MRI_Info,varargin)
+
 
 %% INITIALIZE
 parms.save_NIFTI = 1;
