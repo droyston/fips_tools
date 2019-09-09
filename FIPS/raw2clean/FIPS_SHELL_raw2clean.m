@@ -232,7 +232,7 @@ else% smart-onset flag
     
 end
 
-MRI_Info.FS_script =            'FIPS_r2c_FreesurferReconstruction.sh'; % Relative paths if in Matlab Path
+MRI_Info.FS_script =            'FIPS_r2c_FS_recon.sh'; % Relative paths if in Matlab Path
 MRI_Info.SPM2SUMA_script =      'FIPS_r2c_SPM2SUMA.sh';
 
 %% =======================================================
